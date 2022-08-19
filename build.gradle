@@ -1,0 +1,94 @@
+plugins{
+    id 'java'
+    id 'maven-publish'
+    id 'kr.entree.spigradle' version '2.2.4'
+    id 'io.freefair.lombok' version '6.1.0'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+group = 'srdqrk'
+version = '1.0-SNAPSHOT'
+compileJava{
+    options.encoding = 'UTF-8'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+javadoc {
+    options.encoding = 'UTF-8'
+}
+repositories {
+    mavenCentral()
+    jcenter()
+    maven {
+        name = 'spigotmc-repo'
+        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+    }
+    maven {
+        name = 'sonatype'
+        url = 'https://oss.sonatype.org/content/groups/public/'
+    }
+    maven { url 'https://libraries.minecraft.net/' }
+    maven { url 'https://plugins.gradle.org/m2' }
+    maven { url 'https://jitpack.io' }
+    maven { url 'https://repo.aikar.co/content/groups/aikar/' }
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    //Spigot
+    compileOnly 'org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT'
+
+    //Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+    testCompileOnly 'org.projectlombok:lombok:1.18.12'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+    //ACF
+    implementation 'co.aikar:acf-paper:0.5.0-SNAPSHOT'
+
+    //FastInv
+    implementation 'fr.mrmicky:FastInv:3.0.3'
+}
+
+def targetJavaVersion = 17
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        options.release = targetJavaVersion
+    }
+}
+
+processResources {
+    def props = [version: version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
+}
+shadowJar {
+    relocate 'co.aikar.commands', 'shadded.acf'
+    relocate 'co.aikar.locales', 'shadded.acf.locales'
+    relocate 'acf-minecraft_', 'shadded.acf.properties.acf-minecraft_'
+    relocate 'acf-core_', 'shadded.acf.properties.acf-core_'
+    relocate 'fr.mrmicky.fastinv', 'com.yourpackage.fastinv'
+
+}
+
+
+
+
+build.dependsOn shadowJar
+

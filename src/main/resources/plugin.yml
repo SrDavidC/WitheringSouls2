@@ -1,0 +1,6 @@
+name: Withering
+version: '${version}'
+main: srdqrk.withering.Core
+api-version: 1.18
+authors: [ SrDqrk ]
+description: A powerful base of Withering Souls Hardcore Server
