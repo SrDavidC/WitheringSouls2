@@ -3,6 +3,7 @@ package srdqrk.withering;
 import fr.mrmicky.fastinv.FastInvManager;
 import kr.entree.spigradle.annotations.SpigotPlugin;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import srdqrk.withering.commands.CommandManager;
 import srdqrk.withering.listeners.ListenerManager;
@@ -42,7 +43,7 @@ public class Core extends JavaPlugin {
 
     public boolean isOn(int day){
 
-        //Bukkit.broadcastMessage("Me dan: " + day + "\nY los dias son: " + this.getGame().getDay() +
+        Bukkit.broadcastMessage("Me dan: " + day + "\nY los dias son: " + this.getGame().getDay() +
           //      " \nPor lo tanto " + (day <= this.getGame().getDay()) );
         return day <= this.getGame().getDay();
     }
